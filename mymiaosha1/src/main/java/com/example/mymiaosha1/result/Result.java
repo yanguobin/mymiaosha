@@ -9,15 +9,19 @@ public class Result<T> {
         return new Result<T>(data);
     }
 
-    public Result(CodeMsg cm) {
-        if (cm == null){
-            return;
-        }
-        this.code = cm.getCode();
-        this.msg = cm.getMsg();
+    public static <T> Result<T> error(CodeMsg codeMsg){
+        return new Result<T>(codeMsg);
     }
 
-    public Result(T data) {
+    private Result(CodeMsg codeMsg) {
+        if (codeMsg == null){
+            return;
+        }
+        this.code = codeMsg.getCode();
+        this.msg = codeMsg.getMsg();
+    }
+
+    private Result(T data) {
         this.code = 0;
         this.msg = "success";
         this.data = data;

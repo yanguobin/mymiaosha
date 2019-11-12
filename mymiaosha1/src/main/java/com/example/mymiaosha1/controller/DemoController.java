@@ -1,5 +1,6 @@
 package com.example.mymiaosha1.controller;
 
+import com.example.mymiaosha1.result.CodeMsg;
 import com.example.mymiaosha1.result.Result;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +26,7 @@ public class DemoController {
     @RequestMapping("/helloError")
     @ResponseBody
     public Result helloError(){
-        return new Result(500100, "服务器异常");
+//        return new Result(500100, "服务器异常");
+        return Result.error(CodeMsg.SERVER_ERROR);
     }
 }
