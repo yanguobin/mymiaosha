@@ -20,4 +20,10 @@ public class DemoController {
     public Result hello(){
         return new Result(0, "success", "hello,小老弟");
     }
+
+    @RequestMapping("/helloError")
+    @ResponseBody
+    public Result helloError(){
+        return new Result(500100, "服务器异常");
+    }
 }
