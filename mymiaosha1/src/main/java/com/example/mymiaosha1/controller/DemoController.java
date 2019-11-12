@@ -3,6 +3,7 @@ package com.example.mymiaosha1.controller;
 import com.example.mymiaosha1.result.CodeMsg;
 import com.example.mymiaosha1.result.Result;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -28,5 +29,11 @@ public class DemoController {
     public Result helloError(){
 //        return new Result(500100, "服务器异常");
         return Result.error(CodeMsg.SERVER_ERROR);
+    }
+
+    @RequestMapping("/thymeleaf")
+    public String thymeleaf(Model model){
+        model.addAttribute("name", "小老弟");
+        return "hello";
     }
 }
