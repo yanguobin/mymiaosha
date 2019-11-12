@@ -1,7 +1,10 @@
-package com.example.mymiaosha1.controller;
+package com.example.mymiaosha2.controller;
 
-import com.example.mymiaosha1.result.CodeMsg;
-import com.example.mymiaosha1.result.Result;
+import com.example.mymiaosha2.domain.User;
+import com.example.mymiaosha2.result.CodeMsg;
+import com.example.mymiaosha2.result.Result;
+import com.example.mymiaosha2.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,6 +13,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/demo")
 public class DemoController {
+
+    @Autowired
+    UserService userService;
 
     @RequestMapping("/")
     @ResponseBody
@@ -35,5 +41,11 @@ public class DemoController {
     public String thymeleaf(Model model){
         model.addAttribute("name", "小老弟");
         return "hello";
+    }
+
+    @RequestMapping("/db/get")
+    @ResponseBody
+    public Result<User> dbGet(){
+        return Result.success(userService.getById(1));
     }
 }

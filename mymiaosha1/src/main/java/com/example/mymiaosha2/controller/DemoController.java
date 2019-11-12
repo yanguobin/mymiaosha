@@ -1,7 +1,7 @@
-package com.example.mymiaosha1.controller;
+package com.example.mymiaosha2.controller;
 
-import com.example.mymiaosha1.result.CodeMsg;
-import com.example.mymiaosha1.result.Result;
+import com.example.mymiaosha2.result.CodeMsg;
+import com.example.mymiaosha2.result.Result;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;

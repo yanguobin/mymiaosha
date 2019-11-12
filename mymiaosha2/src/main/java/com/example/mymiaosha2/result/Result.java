@@ -1,4 +1,4 @@
-package com.example.mymiaosha1.result;
+package com.example.mymiaosha2.result;
 
 public class Result<T> {
     private Integer code;

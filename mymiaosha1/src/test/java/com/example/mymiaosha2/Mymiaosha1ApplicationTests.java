@@ -1,4 +1,4 @@
-package com.example.mymiaosha1;
+package com.example.mymiaosha2;
 
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
