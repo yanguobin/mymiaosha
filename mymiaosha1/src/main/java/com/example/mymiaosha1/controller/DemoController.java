@@ -1,5 +1,6 @@
 package com.example.mymiaosha1.controller;
 
+import com.example.mymiaosha1.result.Result;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,5 +15,9 @@ public class DemoController {
         return "Hello World!";
     }
 
-
+    @RequestMapping("/hello")
+    @ResponseBody
+    public Result hello(){
+        return new Result(0, "success", "hello,小老弟");
+    }
 }
