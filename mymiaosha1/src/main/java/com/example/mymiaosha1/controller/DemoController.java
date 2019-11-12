@@ -17,8 +17,9 @@ public class DemoController {
 
     @RequestMapping("/hello")
     @ResponseBody
-    public Result hello(){
-        return new Result(0, "success", "hello,小老弟");
+    public Result<String> hello(){
+//        return new Result(0, "success", "hello,小老弟");
+        return Result.success("hello,小老弟");
     }
 
     @RequestMapping("/helloError")
