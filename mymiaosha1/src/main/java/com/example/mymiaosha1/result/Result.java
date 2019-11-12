@@ -9,9 +9,12 @@ public class Result<T> {
         return new Result<T>(data);
     }
 
-    public Result(Integer code, String msg) {
-        this.code = code;
-        this.msg = msg;
+    public Result(CodeMsg cm) {
+        if (cm == null){
+            return;
+        }
+        this.code = cm.getCode();
+        this.msg = cm.getMsg();
     }
 
     public Result(T data) {
