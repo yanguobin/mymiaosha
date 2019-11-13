@@ -48,4 +48,11 @@ public class DemoController {
     public Result<User> dbGet(){
         return Result.success(userService.getById(1));
     }
+
+    @RequestMapping("/db/tx")
+    @ResponseBody
+    public Result<Boolean> dbTx(){
+        userService.tx();
+        return Result.success(true);
+    }
 }
