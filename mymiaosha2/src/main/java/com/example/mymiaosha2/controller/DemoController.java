@@ -1,6 +1,7 @@
 package com.example.mymiaosha2.controller;
 
 import com.example.mymiaosha2.domain.User;
+import com.example.mymiaosha2.redis.MyRedisUtil;
 import com.example.mymiaosha2.result.CodeMsg;
 import com.example.mymiaosha2.result.Result;
 import com.example.mymiaosha2.service.UserService;
@@ -16,6 +17,9 @@ public class DemoController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    MyRedisUtil myRedisUtil;
 
     @RequestMapping("/")
     @ResponseBody
@@ -54,5 +58,20 @@ public class DemoController {
     public Result<Boolean> dbTx(){
         userService.tx();
         return Result.success(true);
+    }
+
+    @RequestMapping("/redis/get")
+    @ResponseBody
+    public Result<Long> redisGet(){
+        Long v1 = myRedisUtil.get("key1", Long.class);
+        return Result.success(v1);
+    }
+
+    @RequestMapping("/redis/set")
+    @ResponseBody
+    public Result<String> redisSet(){
+        Boolean ret = myRedisUtil.set("key2", "hello,小老弟");
+        String str = myRedisUtil.get("key2", String.class);
+        return Result.success(str);
     }
 }
