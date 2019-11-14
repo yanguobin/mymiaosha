@@ -67,7 +67,7 @@ public class DemoController {
         return Result.success(v1);
     }
 
-    @RequestMapping("/redis/set")
+    @RequestMapping("/redis/set") 
     @ResponseBody
     public Result<String> redisSet(){
         Boolean ret = myRedisUtil.set("key2", "hello,小老弟");
