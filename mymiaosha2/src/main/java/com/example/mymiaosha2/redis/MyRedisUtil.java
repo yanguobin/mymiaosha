@@ -12,6 +12,14 @@ public class MyRedisUtil {
     @Autowired
     JedisPool jedisPool;
 
+    /**
+     * 根据键获取值
+     * @param prefix
+     * @param key
+     * @param clazz
+     * @param <T>
+     * @return
+     */
     public <T> T get(KeyPrefix prefix, String key, Class<T> clazz){
         Jedis jedis = null;
         try {
@@ -25,6 +33,14 @@ public class MyRedisUtil {
         }
     }
 
+    /**
+     * 将键值设置到Redis中
+     * @param prefix
+     * @param key
+     * @param value
+     * @param <T>
+     * @return
+     */
     public <T> Boolean set(KeyPrefix prefix, String key, T value){
         Jedis jedis = null;
         try {
@@ -34,8 +50,64 @@ public class MyRedisUtil {
                 return false;
             }
             String realKey = prefix.getPrefix() + key;
-            jedis.set(realKey, str);    //set方法的第二个参数也就是值的类型默认为String类型，所以需要先将T类型的值转化为String类型
+            int seconds = prefix.expireSeconds();
+            if (seconds <= 0){ //expireSeconds为过期时间，seconds <= 0 也就是没有过期
+                jedis.set(realKey, str);    //set方法的第二个参数也就是值的类型默认为String类型，所以需要先将T类型的值转化为String类型
+            }else {
+                jedis.setex(realKey, seconds, str);
+            }
             return true;
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
+    /**
+     * 判断键是否存在
+     * @param prefix
+     * @param key
+     * @return
+     */
+    public Boolean exists(KeyPrefix prefix, String key){
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            String realPrefix = prefix.getPrefix() + key;
+            return jedis.exists(realPrefix);
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
+    /**
+     * 对键的值加一
+     * @param prefix
+     * @param key
+     * @return
+     */
+    public Long incr(KeyPrefix prefix, String key){
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            String realPrefix = prefix.getPrefix() + key;
+            return jedis.incr(realPrefix);
+        }finally {
+            returnToPool(jedis);
+        }
+    }
+
+    /**
+     * 对键的值减一
+     * @param prefix
+     * @param key
+     * @return
+     */
+    public Long decr(KeyPrefix prefix, String key){
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            String realPrefix = prefix.getPrefix() + key;
+            return jedis.decr(realPrefix);
         }finally {
             returnToPool(jedis);
         }
