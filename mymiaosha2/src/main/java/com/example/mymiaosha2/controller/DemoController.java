@@ -2,6 +2,7 @@ package com.example.mymiaosha2.controller;
 
 import com.example.mymiaosha2.domain.User;
 import com.example.mymiaosha2.redis.MyRedisUtil;
+import com.example.mymiaosha2.redis.UserKey;
 import com.example.mymiaosha2.result.CodeMsg;
 import com.example.mymiaosha2.result.Result;
 import com.example.mymiaosha2.service.UserService;
@@ -62,16 +63,18 @@ public class DemoController {
 
     @RequestMapping("/redis/get")
     @ResponseBody
-    public Result<Long> redisGet(){
-        Long v1 = myRedisUtil.get("key1", Long.class);
-        return Result.success(v1);
+    public Result<User> redisGet(){
+        User user = myRedisUtil.get(UserKey.getById, ""+1, User.class);  //单一的键名容易重复被覆盖，应该拼装为更复杂的键，比如加前缀，键id变为UserKey:id1
+        return Result.success(user);
     }
 
-    @RequestMapping("/redis/set") 
+    @RequestMapping("/redis/set")
     @ResponseBody
-    public Result<String> redisSet(){
-        Boolean ret = myRedisUtil.set("key2", "hello,小老弟");
-        String str = myRedisUtil.get("key2", String.class);
-        return Result.success(str);
+    public Result<Boolean> redisSet(){
+        User user = new User();
+        user.setId(1);
+        user.setName("1111");
+        myRedisUtil.set(UserKey.getById, ""+1, user);   //键id变为UserKey:id1
+        return Result.success(true);
     }
 }

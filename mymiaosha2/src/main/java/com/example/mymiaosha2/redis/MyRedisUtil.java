@@ -12,11 +12,12 @@ public class MyRedisUtil {
     @Autowired
     JedisPool jedisPool;
 
-    public <T> T get(String key, Class<T> clazz){
+    public <T> T get(KeyPrefix prefix, String key, Class<T> clazz){
         Jedis jedis = null;
         try {
             jedis = jedisPool.getResource();
-            String str = jedis.get(key);    //get方法的返回值默认为String类型，而我们需要返回的值是T类型，所以要先将String类型转化为T类型后再返回
+            String realKey = prefix.getPrefix() + key;
+            String str = jedis.get(realKey);    //get方法的返回值默认为String类型，而我们需要返回的值是T类型，所以要先将String类型转化为T类型后再返回
             T t = stringToBean(str, clazz);
             return t;
         }finally {
@@ -24,7 +25,7 @@ public class MyRedisUtil {
         }
     }
 
-    public <T> Boolean set(String key, T value){
+    public <T> Boolean set(KeyPrefix prefix, String key, T value){
         Jedis jedis = null;
         try {
             jedis = jedisPool.getResource();
@@ -32,7 +33,8 @@ public class MyRedisUtil {
             if (str == null || str.length() <= 0){
                 return false;
             }
-            jedis.set(key, str);    //set方法的第二个参数也就是值的类型默认为String类型，所以需要先将T类型的值转化为String类型
+            String realKey = prefix.getPrefix() + key;
+            jedis.set(realKey, str);    //set方法的第二个参数也就是值的类型默认为String类型，所以需要先将T类型的值转化为String类型
             return true;
         }finally {
             returnToPool(jedis);
