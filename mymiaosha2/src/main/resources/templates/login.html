@@ -82,13 +82,13 @@ function doLogin(){
 	    },
 	    success:function(data){
 	    	layer.closeAll();
-	    	console.log(data);
-	    	// if(data.code == 0){
-	    	// 	layer.msg("成功");
-	    	// 	window.location.href="/goods/to_list";
-	    	// }else{
-	    	// 	layer.msg(data.msg);
-	    	// }
+	    	// console.log(data);
+	    	if(data.code == 0){		//服务端Result类中定义的code
+	    		layer.msg("成功");	//会在屏幕上弹出一个短暂的提示信息，并自动消失
+	    		// window.location.href="/goods/to_list";
+	    	}else{
+	    		layer.msg(data.msg);	//服务端Result类中定义的msg
+	    	}
 	    },
 	    error:function(){
 	    	layer.closeAll();
