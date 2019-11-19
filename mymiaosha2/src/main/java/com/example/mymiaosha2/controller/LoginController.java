@@ -14,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.validation.Valid;
+
 @Controller
 @RequestMapping("/login")
 public class LoginController {
@@ -33,20 +35,20 @@ public class LoginController {
 
     @RequestMapping("/do_login")
     @ResponseBody
-    public Result<Boolean> doLogin(LoginVo loginVo){
+    public Result<Boolean> doLogin(@Valid LoginVo loginVo){
         logger.info(loginVo.toString());
-        //参数校验
-        String passInput = loginVo.getPassword();
-        String mobile = loginVo.getMobile();    //这是通过ajax做第一次md5加密后的密码
-        if (StringUtils.isEmpty(passInput)){    //StringUtils类在commons-lang3依赖下
-            return Result.error(CodeMsg.PASSWORD_EMPTY);
-        }
-        if (StringUtils.isEmpty(mobile)){
-            return Result.error(CodeMsg.MOBILE_EMPTY);
-        }
-        if (!ValidatorUtil.isMobile(mobile)){
-            return Result.error(CodeMsg.MOBILE_ERROR);
-        }
+//        //参数校验
+//        String passInput = loginVo.getPassword();
+//        String mobile = loginVo.getMobile();    //这是通过ajax做第一次md5加密后的密码
+//        if (StringUtils.isEmpty(passInput)){    //StringUtils类在commons-lang3依赖下
+//            return Result.error(CodeMsg.PASSWORD_EMPTY);
+//        }
+//        if (StringUtils.isEmpty(mobile)){
+//            return Result.error(CodeMsg.MOBILE_EMPTY);
+//        }
+//        if (!ValidatorUtil.isMobile(mobile)){
+//            return Result.error(CodeMsg.MOBILE_ERROR);
+//        }
         //登录
         CodeMsg codeMsg = miaoshaUserService.login(loginVo);
         if (codeMsg.getCode() == 0){
