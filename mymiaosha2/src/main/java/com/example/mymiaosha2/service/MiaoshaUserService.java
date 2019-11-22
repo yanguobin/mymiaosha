@@ -3,25 +3,36 @@ package com.example.mymiaosha2.service;
 import com.example.mymiaosha2.dao.MiaoshaUserDao;
 import com.example.mymiaosha2.domain.MiaoshaUser;
 import com.example.mymiaosha2.exception.GlobalException;
+import com.example.mymiaosha2.redis.MiaoshaUserKey;
+import com.example.mymiaosha2.redis.MyRedisUtil;
 import com.example.mymiaosha2.result.CodeMsg;
 import com.example.mymiaosha2.util.MD5Util;
+import com.example.mymiaosha2.util.UUIDUtil;
 import com.example.mymiaosha2.vo.LoginVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 
 import static com.example.mymiaosha2.util.MD5Util.formPassToDBPass;
 
 @Service
 public class MiaoshaUserService {
 
+    private static final String COOKIE_NAME_TOKEN = "token";
+
     @Autowired
     MiaoshaUserDao miaoshaUserDao;
+
+    @Autowired
+    MyRedisUtil myRedisUtil;
 
     public MiaoshaUser getById(long id){
         return miaoshaUserDao.getById(id);
     }
 
-    public boolean login(LoginVo loginVo){      //应该返回表达业务方法含义的类型，而不应该是CodeMsg
+    public boolean login(HttpServletResponse response, LoginVo loginVo){      //应该返回表达业务方法含义的类型，而不应该是CodeMsg
         if (loginVo == null){
             throw new GlobalException(CodeMsg.SERVER_ERROR);        //出现异常直接往外抛
         }
@@ -39,6 +50,13 @@ public class MiaoshaUserService {
         if (!calcPass.equals(dbPass)){
             throw new GlobalException(CodeMsg.PASSWORD_ERROR);
         }
+        //生成cookie
+        String token = UUIDUtil.uuid();
+        myRedisUtil.set(MiaoshaUserKey.token, token, user); //将user和token绑定并存入Redis中
+        Cookie cookie = new Cookie(COOKIE_NAME_TOKEN, token);   //根据token生成cookie
+        cookie.setMaxAge(MiaoshaUserKey.token.expireSeconds());
+        cookie.setPath("/");
+        response.addCookie(cookie); //将cookie放入response客户端中
         return true;
     }
 }
