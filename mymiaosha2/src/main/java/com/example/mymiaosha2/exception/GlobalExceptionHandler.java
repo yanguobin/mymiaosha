@@ -18,7 +18,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = Exception.class)
     public Result<String> exceptionHandler(HttpServletRequest request, Exception e){
         e.printStackTrace();
-        if (e instanceof BindException){
+        if (e instanceof GlobalException){
+            GlobalException ex = (GlobalException)e;
+            return Result.error(ex.getCodeMsg());
+        }else if (e instanceof BindException){
             BindException ex = (BindException)e;    //强转
             List<ObjectError> errors = ex.getAllErrors();   //获取所有的错误
             ObjectError error = errors.get(0);      //拿到第一个错误
