@@ -9,6 +9,7 @@ import com.example.mymiaosha2.result.CodeMsg;
 import com.example.mymiaosha2.util.MD5Util;
 import com.example.mymiaosha2.util.UUIDUtil;
 import com.example.mymiaosha2.vo.LoginVo;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +21,7 @@ import static com.example.mymiaosha2.util.MD5Util.formPassToDBPass;
 @Service
 public class MiaoshaUserService {
 
-    private static final String COOKIE_NAME_TOKEN = "token";
+    public static final String COOKIE_NAME_TOKEN = "token";
 
     @Autowired
     MiaoshaUserDao miaoshaUserDao;
@@ -58,5 +59,12 @@ public class MiaoshaUserService {
         cookie.setPath("/");
         response.addCookie(cookie); //将cookie放入response客户端中
         return true;
+    }
+
+    public MiaoshaUser getByToken(String token) {
+        if (StringUtils.isEmpty(token)){
+            return null;
+        }
+        return myRedisUtil.get(MiaoshaUserKey.token, token, MiaoshaUser.class);
     }
 }
