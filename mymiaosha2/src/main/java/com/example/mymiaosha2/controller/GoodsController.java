@@ -27,14 +27,7 @@ public class GoodsController {
     MiaoshaUserService miaoshaUserService;
 
     @RequestMapping("/to_list")
-    public String list(Model model,
-                       @CookieValue(value = MiaoshaUserService.COOKIE_NAME_TOKEN, required = false) String cookieToken,
-                       @RequestParam(value = MiaoshaUserService.COOKIE_NAME_TOKEN, required = false) String paramToken) {
-        if (StringUtils.isEmpty(cookieToken) && StringUtils.isEmpty(paramToken)){
-            return "login";
-        }
-        String token = StringUtils.isEmpty(paramToken)?cookieToken:paramToken;  //paramToken优先使用
-        MiaoshaUser user = miaoshaUserService.getByToken(token);
+    public String list(Model model, MiaoshaUser user) {
         model.addAttribute("user", user);
         return "goods_list";
     }
