@@ -9,6 +9,19 @@ public class Goods {
     private Double goodsPrice;
     private Integer goodsStock;
 
+    @Override
+    public String toString() {
+        return "Goods{" +
+                "id=" + id +
+                ", goodsName='" + goodsName + '\'' +
+                ", goodsTitle='" + goodsTitle + '\'' +
+                ", goodsImg='" + goodsImg + '\'' +
+                ", goodsDetail='" + goodsDetail + '\'' +
+                ", goodsPrice=" + goodsPrice +
+                ", goodsStock=" + goodsStock +
+                '}';
+    }
+
     public Long getId() {
         return id;
     }

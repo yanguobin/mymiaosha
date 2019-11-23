@@ -1,5 +1,6 @@
 package com.example.mymiaosha.controller;
 
+import com.example.mymiaosha.domain.Goods;
 import com.example.mymiaosha.domain.User;
 import com.example.mymiaosha.redis.MyRedisUtil;
 import com.example.mymiaosha.redis.UserKey;
@@ -77,4 +78,5 @@ public class DemoController {
         myRedisUtil.set(UserKey.getById, ""+1, user);   //键id变为UserKey:id1
         return Result.success(true);
     }
+
 }
