@@ -21,6 +21,50 @@
 
 </head>
 <body>
-    <p th:text="${orderInfo.id}"></p>
+    <div class="panel panel-default">
+        <div class="panel-heading">秒杀订单详情</div>
+        <table class="table" id="goodslist">
+            <tr>
+                <td>商品名称</td>
+                <td th:text="${goodsVo.goodsName}" colspan="3"></td>
+            </tr>
+            <tr>
+                <td>商品图片</td>
+                <td colspan="2">
+                    <img th:src="@{${goodsVo.goodsImg}}" width="200" height="200"/>
+                </td>
+            </tr>
+            <tr>
+                <td>订单价格</td>
+                <td colspan="2" th:text="${orderInfo.goodsPrice}"></td>
+            </tr>
+            <tr>
+                <td>下单时间</td>
+                <td th:text="${#dates.format(orderInfo.createDate, 'yyyy-MM-dd HH:mm:ss')}" colspan="2"></td>
+            </tr>
+            <tr>
+                <td>订单状态</td>
+                <td>
+                    <span th:if="${orderInfo.status eq 0}">未支付</span>
+                    <span th:if="${orderInfo.status eq 0}">待发货</span>
+                    <span th:if="${orderInfo.status eq 0}">已发货</span>
+                    <span th:if="${orderInfo.status eq 0}">已收货</span>
+                    <span th:if="${orderInfo.status eq 0}">已退款</span>
+                    <span th:if="${orderInfo.status eq 0}">已完成</span>
+                </td>
+                <td>
+                    <button class="btn btn-primary btn-block" type="submit" id="payButton">立即支付</button>
+                </td>
+            </tr>
+            <tr>
+                <td>收货人</td>
+                <td colspan="2">yanguobin 15842674359</td>
+            </tr>
+            <tr>
+                <td>收获地址</td>
+                <td colspan="2">中国 北京</td>
+            </tr>
+        </table>
+    </div>
 </body>
 </html>
