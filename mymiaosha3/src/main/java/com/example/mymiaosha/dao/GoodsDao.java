@@ -1,6 +1,7 @@
 package com.example.mymiaosha.dao;
 
 import com.example.mymiaosha.domain.Goods;
+import com.example.mymiaosha.domain.MiaoshaGoods;
 import com.example.mymiaosha.vo.GoodsVo;
 import org.apache.ibatis.annotations.*;
 
@@ -40,4 +41,7 @@ public interface GoodsDao {
             @Result(property = "endDate", column = "end_date")
     })
     public GoodsVo getGoodsVoByGoodsId(@Param("goodsId") long goodsId);
+
+    @Update("update miaosha_goods set stock_count = stock_count - 1 where goods_id = #{goodsId}")
+    public int reduceStock(MiaoshaGoods miaoshaGoods);
 }
