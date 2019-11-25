@@ -40,9 +40,10 @@
                 <td>秒杀开始时间</td>
                 <td th:text="${#dates.format(goods.startDate, 'yyyy-MM-dd HH:mm:ss')}"></td>
                 <td id="miaoshaTip">
-                    <span th:if="miaoshaStatus == 0">秒杀倒计时：<span id="countDown"></span>秒</span>
-                    <span th:if="miaoshaStatus == 1">秒杀进行中</span>
-                    <span th:if="miaoshaStatus == 2">秒杀已结束</span>
+                    <input type="hidden" id="remainSeconds" th:value="${remainSeconds}"/>    <!-- 由于下面只有秒杀倒计时中才有remainSeconds，所以先在隐藏域中保留一份供其他地方使用 -->
+                    <span th:if="${miaoshaStatus eq 0}">秒杀倒计时：<span id="countDown" th:text="${remainSeconds}"></span>秒</span>
+                    <span th:if="${miaoshaStatus eq 1}">秒杀进行中</span>
+                    <span th:if="${miaoshaStatus eq 2}">秒杀已结束</span>
                 </td>
                 <td>
                     <form id="miaoshaForm" method="post" action="/miaosha/do_miaosha">
@@ -66,4 +67,31 @@
         </table>
     </div>
 </body>
+<script>    //页面初始化就执行
+    $(function () {
+       countDown();
+    });
+    function countDown() {
+        // var remainSeconds = $("#countDown").text();     <!-- 这样写的话，在秒杀进行中和秒杀已结束时就没有值 -->
+        var remainSeconds = $("#remainSeconds").val();  <!-- 在隐藏域中取 -->
+        var timeout;
+        if (remainSeconds > 0){ //秒杀还没开始，倒计时
+            $("#buyButton").attr("disabled", true); //按钮不能点
+            timeout = setTimeout(function () {
+                $("#countDown").text(remainSeconds - 1);    //input标签用的是th:value       文案随着改
+                $("#remainSeconds").val(remainSeconds - 1); //span标签用的是th:text
+                countDown();    //不断回调countDown方法
+            }, 1000);   //过1秒之后，setTimeout就会执行
+        }else if(remainSeconds == 0){   //秒杀进行中
+            $("#buyButton").attr("disabled", false);
+            if (timeout){
+                clearTimeout(timeout);  //自带的清除函数吧
+            }
+            $("#miaoshaTip").html("秒杀进行中"); //等到remainSeconds减到0时，改文案
+        }else { //秒杀已经结束
+            $("#buyButton").attr("disabled", true);
+            $("#miaoshaTip").html("秒杀已结束");
+        }
+    }
+</script>
 </html>
