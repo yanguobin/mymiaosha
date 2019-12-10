@@ -44,15 +44,15 @@ public class GoodsController {
     @ResponseBody
     public String list(HttpServletRequest request, HttpServletResponse response, Model model, MiaoshaUser user) {
         model.addAttribute("user", user);
-        //查询商品列表，包括商品和秒杀商品
-        List<GoodsVo> goodsList = goodsService.listGoodsVo();
-        model.addAttribute("goodsList", goodsList);     //放到Model中，供前端展示使用。
-//        return "goods_list";
         //取缓存
         String html = myRedisUtil.get(GoodsKey.getGoodsList, "", String.class);
         if (!StringUtils.isEmpty(html)){
             return html;
         }
+        //查询商品列表，包括商品和秒杀商品
+        List<GoodsVo> goodsList = goodsService.listGoodsVo();
+        model.addAttribute("goodsList", goodsList);     //放到Model中，供前端展示使用。
+//        return "goods_list";
         //手动渲染
         SpringWebContext ctx = new SpringWebContext(request, response, request.getServletContext(), request.getLocale(), model.asMap(), applicationContext);
         html = thymeleafViewResolver.getTemplateEngine().process("goods_list", ctx);
@@ -66,6 +66,11 @@ public class GoodsController {
     @ResponseBody
     public String detail(HttpServletRequest request, HttpServletResponse response, Model model, MiaoshaUser user, @PathVariable("goodsId") long goodsId) {
         model.addAttribute("user", user);
+        //取缓存
+        String html = myRedisUtil.get(GoodsKey.getGoodsDetail, ""+goodsId, String.class);
+        if (!StringUtils.isEmpty(html)){
+            return html;
+        }
         GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
         model.addAttribute("goods", goods);
 
@@ -89,11 +94,6 @@ public class GoodsController {
         model.addAttribute("miaoshaStatus", miaoshaStatus);
         model.addAttribute("remainSeconds", remainSeconds);
 //        return "goods_detail";
-        //取缓存
-        String html = myRedisUtil.get(GoodsKey.getGoodsDetail, ""+goodsId, String.class);
-        if (!StringUtils.isEmpty(html)){
-            return html;
-        }
         //手动渲染
         SpringWebContext ctx = new SpringWebContext(request, response, request.getServletContext(), request.getLocale(), model.asMap(), applicationContext);
         html = thymeleafViewResolver.getTemplateEngine().process("goods_detail", ctx);
