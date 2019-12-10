@@ -28,7 +28,35 @@ public class MiaoshaUserService {
     MyRedisUtil myRedisUtil;
 
     public MiaoshaUser getById(long id){
-        return miaoshaUserDao.getById(id);
+        //取缓存
+        MiaoshaUser miaoshaUser = myRedisUtil.get(MiaoshaUserKey.getById, ""+id, MiaoshaUser.class);
+        if (miaoshaUser != null){
+            return miaoshaUser;
+        }
+        //取数据库
+        miaoshaUser = miaoshaUserDao.getById(id);
+        if (miaoshaUser != null){
+            myRedisUtil.set(MiaoshaUserKey.getById, ""+id, miaoshaUser);
+        }
+        return miaoshaUser;
+    }
+
+    public boolean updatePassword(String token, long id, String formPass){
+        //取user
+        MiaoshaUser miaoshaUser = getById(id);
+        if (miaoshaUser == null){
+            throw new GlobalException(CodeMsg.MOBILE_NOT_EXIST);
+        }
+        //更新数据库
+        MiaoshaUser toBeUpdate = new MiaoshaUser();
+        toBeUpdate.setId(id);
+        toBeUpdate.setPassword(MD5Util.formPassToDBPass(formPass, miaoshaUser.getSalt()));
+        miaoshaUserDao.update(toBeUpdate);
+        //处理缓存
+        myRedisUtil.delete(MiaoshaUserKey.getById, ""+id);
+        miaoshaUser.setPassword(toBeUpdate.getPassword());
+        myRedisUtil.set(MiaoshaUserKey.token, token, miaoshaUser);
+        return true;
     }
 
     public boolean login(HttpServletResponse response, LoginVo loginVo){      //应该返回表达业务方法含义的类型，而不应该是CodeMsg
