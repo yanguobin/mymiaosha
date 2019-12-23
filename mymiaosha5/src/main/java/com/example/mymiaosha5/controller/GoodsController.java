@@ -3,8 +3,10 @@ package com.example.mymiaosha5.controller;
 import com.example.mymiaosha5.domain.MiaoshaUser;
 import com.example.mymiaosha5.redis.GoodsKey;
 import com.example.mymiaosha5.redis.MyRedisUtil;
+import com.example.mymiaosha5.result.Result;
 import com.example.mymiaosha5.service.GoodsService;
 import com.example.mymiaosha5.service.MiaoshaUserService;
+import com.example.mymiaosha5.vo.GoodsDetailVo;
 import com.example.mymiaosha5.vo.GoodsVo;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,9 +64,9 @@ public class GoodsController {
         return html;
     }
 
-    @RequestMapping(value = "/to_detail/{goodsId}", produces = "text/html")
+    @RequestMapping(value = "/to_detail2/{goodsId}", produces = "text/html")
     @ResponseBody
-    public String detail(HttpServletRequest request, HttpServletResponse response, Model model, MiaoshaUser user, @PathVariable("goodsId") long goodsId) {
+    public String detail2(HttpServletRequest request, HttpServletResponse response, Model model, MiaoshaUser user, @PathVariable("goodsId") long goodsId) {
         model.addAttribute("user", user);
         //取缓存
         String html = myRedisUtil.get(GoodsKey.getGoodsDetail, ""+goodsId, String.class);
@@ -101,6 +103,36 @@ public class GoodsController {
             myRedisUtil.set(GoodsKey.getGoodsDetail, ""+goodsId, html);
         }
         return html;
+    }
+
+    @RequestMapping(value = "/detail/{goodsId}")
+    @ResponseBody
+    public Result<GoodsDetailVo> detail(HttpServletRequest request, HttpServletResponse response, Model model, MiaoshaUser user, @PathVariable("goodsId") long goodsId) {
+        GoodsVo goods = goodsService.getGoodsVoByGoodsId(goodsId);
+
+        long startAt = goods.getStartDate().getTime();  //转化为毫秒
+        long endAt = goods.getEndDate().getTime();
+        long now = System.currentTimeMillis();
+
+        int miaoshaStatus = 0;  //秒杀状态
+        int remainSeconds = 0;  //距离开始秒杀还有多久
+
+        if (now < startAt){     //秒杀还没开始，倒计时
+            miaoshaStatus = 0;
+            remainSeconds = (int)((startAt - now)/1000);
+        }else if (now > endAt){ //秒杀已结束
+            miaoshaStatus = 2;
+            remainSeconds = -1;
+        }else {                 //秒杀进行中
+            miaoshaStatus = 1;
+            remainSeconds = 0;
+        }
+        GoodsDetailVo goodsDetailVo = new GoodsDetailVo();
+        goodsDetailVo.setGoodsVo(goods);
+        goodsDetailVo.setMiaoshaUser(user);
+        goodsDetailVo.setMiaoshaStatus(miaoshaStatus);
+        goodsDetailVo.setRemainSeconds(remainSeconds);
+        return Result.success(goodsDetailVo);
     }
 
 }
