@@ -90,7 +90,7 @@ public class MyRedisUtil {
         try {
             jedis = jedisPool.getResource();
             String realPrefix = prefix.getPrefix() + key;
-            long ret = jedis.del(key);
+            long ret = jedis.del(realPrefix);
             return ret > 0;
         }finally {
             returnToPool(jedis);
