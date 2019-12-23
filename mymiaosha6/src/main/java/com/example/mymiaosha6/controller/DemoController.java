@@ -26,6 +26,13 @@ public class DemoController {
     @Autowired
     MQSender mqSender;
 
+    @RequestMapping("/mq/topic")
+    @ResponseBody
+    public Result<String> topic(){
+        mqSender.sendTopic("hello,yanguobin");
+        return Result.success("Hello,World");
+    }
+
     @RequestMapping("/mq")
     @ResponseBody
     public Result<String> mq(){

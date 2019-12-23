@@ -20,4 +20,11 @@ public class MQSender {
         log.info("send message:" + msg);
         amqpTemplate.convertAndSend(MQConfig.QUEUE, msg);
     }
+
+    public void sendTopic(Object message){
+        String msg = MyRedisUtil.beanToString(message);
+        log.info("send topic message:" + msg);
+        amqpTemplate.convertAndSend(MQConfig.TOPIC_EXCHANGE, "topic.key1", msg+"1");
+        amqpTemplate.convertAndSend(MQConfig.TOPIC_EXCHANGE, "topic.key2", msg+"2");
+    }
 }
