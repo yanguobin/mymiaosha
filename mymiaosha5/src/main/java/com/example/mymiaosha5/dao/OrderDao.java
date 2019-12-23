@@ -17,4 +17,20 @@ public interface OrderDao {
 
     @Insert("insert into miaosha_order(user_id, goods_id, order_id) values(#{userId}, #{goodsId}, #{orderId})")
     public int insertMiaoshaOrder(MiaoshaOrder miaoshaOrder);
+
+    @Select("select * from order_info where id = #{orderId}")
+    @Results({
+            @Result(property = "id", column = "id"),
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "goodsId", column = "goods_id"),
+            @Result(property = "deliveryAddrId", column = "delivery_addr_id"),
+            @Result(property = "goodsName", column = "goods_name"),
+            @Result(property = "goodsCount", column = "goods_count"),
+            @Result(property = "goodsPrice", column = "goods_price"),
+            @Result(property = "orderChannel", column = "order_channel"),
+            @Result(property = "status", column = "status"),
+            @Result(property = "createDate", column = "create_date"),
+            @Result(property = "payDate", column = "pay_date")
+    })
+    public OrderInfo getOrderById(@Param("orderId") long orderId);
 }

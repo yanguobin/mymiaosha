@@ -80,7 +80,7 @@ function doMiaosha() {
            if (data.code == 0){
                window.location.href = "/order_detail.htm?orderId=" + data.data.id;
            } else{
-               layer.msg(data.msg)
+               layer.msg(data.msg);
            }
         } ,
         error:function () {
