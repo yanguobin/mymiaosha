@@ -48,7 +48,7 @@
                         <!--<button class="btn btn-primary btn-block" type="submit" id="buyButton">立即秒杀</button>-->
                         <!--<input type="hidden" name="goodsId" value="${goods.id}"/>-->
                     <!--</form>-->
-                    <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="">立即秒杀</button>
+                    <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="doMiaosha()">立即秒杀</button>
                     <input type="hidden" name="goodsId" id="goodsId"/>
                 </td>
             </tr>
@@ -68,6 +68,27 @@
     </div>
 </body>
 <script>    //页面初始化就执行
+
+function doMiaosha() {
+    $.ajax({
+        url:"miaosha/do_miaosha",
+        type:"POST",
+        data:{
+            goodsId:$("#goodsId").val(),
+        },
+        success:function (data) {
+           if (data.code == 0){
+               window.location.href = "/order_detail.htm?orderId=" + data.data.id;
+           } else{
+               layer.msg(data.msg)
+           }
+        } ,
+        error:function () {
+            layer.msg("客户端请求有误");
+        }
+    });
+}
+
 function render(detail){
     var miaoshaStatus = detail.miaoshaStatus;
     var remainSeconds = detail.remainSeconds;

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8"/>
+    <title>订单详情</title>
+
+    <!-- jquery -->
+    <script type="text/javascript" src="/js/jquery.min.js"></script>
+    <!-- bootstrap -->
+    <link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.min.css" />
+    <script type="text/javascript" src="/bootstrap/js/bootstrap.min.js"></script>
+    <!-- jquery-validator -->
+    <script type="text/javascript" src="/jquery-validation/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/jquery-validation/localization/messages_zh.min.js"></script>
+    <!-- layer -->
+    <script type="text/javascript" src="/layer/layer.js"></script>
+    <!-- md5.js -->
+    <script type="text/javascript" src="/js/md5.min.js"></script>
+    <!-- common.js -->
+    <script type="text/javascript" src="/js/common.js"></script>
+
+</head>
+<body>
+    <div class="panel panel-default">
+        <div class="panel-heading">秒杀订单详情</div>
+        <table class="table" id="goodslist">
+            <tr>
+                <td>商品名称</td>
+                <td id="goodsName" colspan="3"></td>
+            </tr>
+            <tr>
+                <td>商品图片</td>
+                <td colspan="2">
+                    <img id="goodsImg" width="200" height="200"/>
+                </td>
+            </tr>
+            <tr>
+                <td>订单价格</td>
+                <td colspan="2" id="orderPrice"></td>
+            </tr>
+            <tr>
+                <td>下单时间</td>
+                <td id="createDate" colspan="2"></td>
+            </tr>
+            <tr>
+                <td>订单状态</td>
+                <td id="orderStatus"></td>
+                <td>
+                    <button class="btn btn-primary btn-block" type="submit" id="payButton">立即支付</button>
+                </td>
+            </tr>
+            <tr>
+                <td>收货人</td>
+                <td colspan="2">yanguobin 15842674359</td>
+            </tr>
+            <tr>
+                <td>收获地址</td>
+                <td colspan="2">中国 北京</td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>
