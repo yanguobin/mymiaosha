@@ -1,6 +1,7 @@
 package com.example.mymiaosha6.controller;
 
 import com.example.mymiaosha6.domain.User;
+import com.example.mymiaosha6.rabbitmq.MQSender;
 import com.example.mymiaosha6.redis.MyRedisUtil;
 import com.example.mymiaosha6.redis.UserKey;
 import com.example.mymiaosha6.result.CodeMsg;
@@ -21,6 +22,16 @@ public class DemoController {
 
     @Autowired
     MyRedisUtil myRedisUtil;
+
+    @Autowired
+    MQSender mqSender;
+
+    @RequestMapping("/mq")
+    @ResponseBody
+    public Result<String> mq(){
+        mqSender.send("hello,yanguobin");
+        return Result.success("Hello,World");
+    }
 
     @RequestMapping("/")
     @ResponseBody
