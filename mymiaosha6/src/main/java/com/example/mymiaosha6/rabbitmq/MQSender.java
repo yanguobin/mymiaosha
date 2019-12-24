@@ -4,6 +4,8 @@ import com.example.mymiaosha6.redis.MyRedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessageProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,5 +34,15 @@ public class MQSender {
         String msg = MyRedisUtil.beanToString(message);
         log.info("send fanout message:" + msg);
         amqpTemplate.convertAndSend(MQConfig.FANOUT_EXCHANGE, "", msg);
+    }
+
+    public void sendHeader(Object message){
+        String msg = MyRedisUtil.beanToString(message);
+        log.info("send header message:" + msg);
+        MessageProperties properties = new MessageProperties();
+        properties.setHeader("header1", "value1");
+        properties.setHeader("header2", "value2");
+        Message obj = new Message(msg.getBytes(), properties);
+        amqpTemplate.convertAndSend(MQConfig.HEADERS_EXCHANGE, "", obj);
     }
 }

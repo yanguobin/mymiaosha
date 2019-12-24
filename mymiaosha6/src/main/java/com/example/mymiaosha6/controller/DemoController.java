@@ -26,6 +26,13 @@ public class DemoController {
     @Autowired
     MQSender mqSender;
 
+    @RequestMapping("/mq/header")
+    @ResponseBody
+    public Result<String> header(){
+        mqSender.sendHeader("hello,yanguobin");
+        return Result.success("Hello,World");
+    }
+
     @RequestMapping("/mq/fanout")
     @ResponseBody
     public Result<String> fanout(){
