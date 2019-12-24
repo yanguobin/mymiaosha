@@ -22,9 +22,10 @@ public class GoodsService {
         return goodsDao.getGoodsVoByGoodsId(goodsId);
     }
 
-    public void reduceStock(GoodsVo goodsVo) {
+    public boolean reduceStock(GoodsVo goodsVo) {
         MiaoshaGoods miaoshaGoods = new MiaoshaGoods();
         miaoshaGoods.setGoodsId(goodsVo.getId());
-        goodsDao.reduceStock(miaoshaGoods);     //减库存其实就是根据商品id更新商品库存为原来库存减1，库存减1可以直接放到sql语句中实现
+        int ret = goodsDao.reduceStock(miaoshaGoods);     //减库存其实就是根据商品id更新商品库存为原来库存减1，库存减1可以直接放到sql语句中实现
+        return ret > 0;
     }
 }

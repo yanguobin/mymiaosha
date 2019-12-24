@@ -40,12 +40,12 @@ public class OrderService {
         orderInfo.setGoodsPrice(goodsVo.getMiaoshaPrice());     //这里是秒杀价格，而不是原价
         orderInfo.setOrderChannel(1);
         orderInfo.setStatus(0);     //新建订单，未支付
-        long orderId = orderDao.insert(orderInfo);  //返回值是通过@SelectKey获取的
+        orderDao.insert(orderInfo);  //返回值是通过@SelectKey获取的
         //创建秒杀订单
         MiaoshaOrder miaoshaOrder = new MiaoshaOrder();
         miaoshaOrder.setUserId(user.getId());
         miaoshaOrder.setGoodsId(goodsVo.getId());
-        miaoshaOrder.setOrderId(orderId);
+        miaoshaOrder.setOrderId(orderInfo.getId());
         orderDao.insertMiaoshaOrder(miaoshaOrder);
 
         myRedisUtil.set(OrderKey.getMiaoshaOrderByUidGid, ""+user.getId()+"_"+goodsVo.getId(), miaoshaOrder);

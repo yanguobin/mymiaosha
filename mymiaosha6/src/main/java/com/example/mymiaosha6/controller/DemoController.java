@@ -26,33 +26,33 @@ public class DemoController {
     @Autowired
     MQSender mqSender;
 
-    @RequestMapping("/mq/header")
-    @ResponseBody
-    public Result<String> header(){
-        mqSender.sendHeader("hello,yanguobin");
-        return Result.success("Hello,World");
-    }
-
-    @RequestMapping("/mq/fanout")
-    @ResponseBody
-    public Result<String> fanout(){
-        mqSender.sendFanout("hello,yanguobin");
-        return Result.success("Hello,World");
-    }
-
-    @RequestMapping("/mq/topic")
-    @ResponseBody
-    public Result<String> topic(){
-        mqSender.sendTopic("hello,yanguobin");
-        return Result.success("Hello,World");
-    }
-
-    @RequestMapping("/mq")
-    @ResponseBody
-    public Result<String> mq(){
-        mqSender.send("hello,yanguobin");
-        return Result.success("Hello,World");
-    }
+//    @RequestMapping("/mq/header")
+//    @ResponseBody
+//    public Result<String> header(){
+//        mqSender.sendHeader("hello,yanguobin");
+//        return Result.success("Hello,World");
+//    }
+//
+//    @RequestMapping("/mq/fanout")
+//    @ResponseBody
+//    public Result<String> fanout(){
+//        mqSender.sendFanout("hello,yanguobin");
+//        return Result.success("Hello,World");
+//    }
+//
+//    @RequestMapping("/mq/topic")
+//    @ResponseBody
+//    public Result<String> topic(){
+//        mqSender.sendTopic("hello,yanguobin");
+//        return Result.success("Hello,World");
+//    }
+//
+//    @RequestMapping("/mq")
+//    @ResponseBody
+//    public Result<String> mq(){
+//        mqSender.send("hello,yanguobin");
+//        return Result.success("Hello,World");
+//    }
 
     @RequestMapping("/")
     @ResponseBody
