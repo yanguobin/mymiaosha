@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Controller
@@ -43,6 +44,8 @@ public class MiaoshaController implements InitializingBean {
     @Autowired
     MQSender mqSender;
 
+    private HashMap<Long, Boolean> localOverMap = new HashMap<>();
+
     /**
      * 系统初始化
      * @throws Exception
@@ -55,6 +58,7 @@ public class MiaoshaController implements InitializingBean {
         }
         for (GoodsVo goods:goodsList){
             myRedisUtil.set(GoodsKey.getMiaoshaGoodsStock, ""+goods.getId(), goods.getStockCount());
+            localOverMap.put(goods.getId(), false);
         }
     }
 
@@ -65,10 +69,16 @@ public class MiaoshaController implements InitializingBean {
         if (user == null){
             return Result.error(CodeMsg.SESSION_ERROR);
         }
+        //内存标记
+        boolean over = localOverMap.get(goodsId);
+        if (over){
+            return Result.error(CodeMsg.MIAO_SHA_OVER);
+        }
 
         //预减库存
         long stock = myRedisUtil.decr(GoodsKey.getMiaoshaGoodsStock, ""+goodsId);
         if (stock < 0){
+            localOverMap.put(goodsId, true);
             return Result.error(CodeMsg.MIAO_SHA_OVER);
         }
 
