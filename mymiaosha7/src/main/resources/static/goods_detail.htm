@@ -48,7 +48,13 @@
                         <!--<button class="btn btn-primary btn-block" type="submit" id="buyButton">立即秒杀</button>-->
                         <!--<input type="hidden" name="goodsId" value="${goods.id}"/>-->
                     <!--</form>-->
-                    <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="getMiaoshaPath()">立即秒杀</button>
+                    <div class="row">
+                        <div class="form-inline">
+                            <img id="verifyCodeImg" width="80" height="32" style="display:none" onclick="refreshVerifyCode()"/>
+                            <input id="verifyCode" class="form-control" style="display:none"/>
+                            <button class="btn btn-primary" type="button" id="buyButton" onclick="getMiaoshaPath()">立即秒杀</button>
+                        </div>
+                    </div>
                     <input type="hidden" name="goodsId" id="goodsId"/>
                 </td>
             </tr>
@@ -209,10 +215,19 @@ function countDown() {
             clearTimeout(timeout);  //自带的清除函数吧
         }
         $("#miaoshaTip").html("秒杀进行中"); //等到remainSeconds减到0时，改文案
+        $("#verifyCodeImg").attr("src", "/miaosha/verifyCode?goodsId=" + $("#goodsId").val());
+        $("#verifyCodeImg").show();
+        $("#verifyCode").show();
     }else { //秒杀已经结束
         $("#buyButton").attr("disabled", true);
         $("#miaoshaTip").html("秒杀已结束");
+        $("#verifyCodeImg").hide();
+        $("#verifyCode").hide();
     }
+}
+
+function refreshVerifyCode() {
+    $("#verifyCodeImg").attr("src", "/miaosha/verifyCode?goodsId=" + $("#goodsId").val() + "&timestamp=" + new Date().getTime());
 }
 </script>
 </html>
