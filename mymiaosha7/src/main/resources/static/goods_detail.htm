@@ -48,7 +48,7 @@
                         <!--<button class="btn btn-primary btn-block" type="submit" id="buyButton">立即秒杀</button>-->
                         <!--<input type="hidden" name="goodsId" value="${goods.id}"/>-->
                     <!--</form>-->
-                    <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="doMiaosha()">立即秒杀</button>
+                    <button class="btn btn-primary btn-block" type="button" id="buyButton" onclick="getMiaoshaPath()">立即秒杀</button>
                     <input type="hidden" name="goodsId" id="goodsId"/>
                 </td>
             </tr>
@@ -68,6 +68,29 @@
     </div>
 </body>
 <script>    //页面初始化就执行
+
+function getMiaoshaPath() {
+    var goodsId = $("#goodsId").val();
+    g_showLoading();
+    $.ajax({
+        url:"miaosha/path",
+        type:"GET",
+        data:{
+            goodsId:goodsId,
+        },
+        success:function (data) {
+            if (data.code == 0){
+                var path = data.data;
+                doMiaosha(path);
+            } else{
+                layer.msg(data.msg);
+            }
+        } ,
+        error:function () {
+            layer.msg("客户端请求有误");
+        }
+    });
+}
 
 function getMiaoshaResult(goodsId) {
     g_showLoading();
@@ -105,9 +128,9 @@ function getMiaoshaResult(goodsId) {
     })
 }
 
-function doMiaosha() {
+function doMiaosha(path) {
     $.ajax({
-        url:"miaosha/do_miaosha",
+        url:"miaosha/" + path + "/do_miaosha",
         type:"POST",
         data:{
             goodsId:$("#goodsId").val(),

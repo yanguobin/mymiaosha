@@ -5,21 +5,21 @@ import com.example.mymiaosha7.domain.MiaoshaUser;
 import com.example.mymiaosha7.rabbitmq.MQSender;
 import com.example.mymiaosha7.rabbitmq.MiaoshaMessage;
 import com.example.mymiaosha7.redis.GoodsKey;
+import com.example.mymiaosha7.redis.MiaoshaKey;
 import com.example.mymiaosha7.redis.MyRedisUtil;
 import com.example.mymiaosha7.result.CodeMsg;
 import com.example.mymiaosha7.result.Result;
 import com.example.mymiaosha7.service.GoodsService;
 import com.example.mymiaosha7.service.MiaoshaService;
 import com.example.mymiaosha7.service.OrderService;
+import com.example.mymiaosha7.util.MD5Util;
+import com.example.mymiaosha7.util.UUIDUtil;
 import com.example.mymiaosha7.vo.GoodsVo;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -61,12 +61,17 @@ public class MiaoshaController implements InitializingBean {
         }
     }
 
-    @RequestMapping(value = "/do_miaosha", method = RequestMethod.POST)
+    @RequestMapping(value = "/{path}/do_miaosha", method = RequestMethod.POST)
     @ResponseBody
-    public Result<Integer> miaosha(Model model, MiaoshaUser user, @RequestParam("goodsId") long goodsId){
+    public Result<Integer> miaosha(Model model, MiaoshaUser user, @RequestParam("goodsId") long goodsId, @PathVariable("path") String path){
         model.addAttribute("user", user);
         if (user == null){
             return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        //验证path
+        boolean check = miaoshaService.checkPath(user, goodsId, path);
+        if (!check){
+            return Result.error(CodeMsg.REQUEST_ILLEGAL);
         }
         //内存标记
         boolean over = localOverMap.get(goodsId);
@@ -126,5 +131,16 @@ public class MiaoshaController implements InitializingBean {
         }
         long result = miaoshaService.getMiaoshaResult(user.getId(), goodsId);
         return Result.success(result);
+    }
+
+    @RequestMapping(value = "/path", method = RequestMethod.GET)
+    @ResponseBody
+    public Result<String> getMiaoshaPath(Model model, MiaoshaUser user, @RequestParam("goodsId") long goodsId) {
+        model.addAttribute("user", user);
+        if (user == null) {
+            return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        String path = miaoshaService.createMiaoshaPath(user, goodsId);
+        return Result.success(path);
     }
 }
