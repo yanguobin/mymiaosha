@@ -118,6 +118,18 @@ public class MiaoshaService {
         return image;
     }
 
+    public boolean checkVerifyCode(MiaoshaUser user, long goodsId, int verifyCode) {
+        if (user == null || goodsId <= 0){
+            return false;
+        }
+        Integer codeOld = myRedisUtil.get(MiaoshaKey.getMiaoshaVerifyCode, user.getId() + "," + goodsId, Integer.class);
+        if (codeOld == null || codeOld - verifyCode != 0){
+            return false;
+        }
+        myRedisUtil.delete(MiaoshaKey.getMiaoshaVerifyCode, user.getId() + "," + goodsId);
+        return true;
+    }
+
     private static int calc(String exp) {
         try {
             ScriptEngineManager manager = new ScriptEngineManager();
