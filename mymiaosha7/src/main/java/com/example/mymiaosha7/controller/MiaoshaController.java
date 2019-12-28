@@ -4,6 +4,7 @@ import com.example.mymiaosha7.domain.MiaoshaOrder;
 import com.example.mymiaosha7.domain.MiaoshaUser;
 import com.example.mymiaosha7.rabbitmq.MQSender;
 import com.example.mymiaosha7.rabbitmq.MiaoshaMessage;
+import com.example.mymiaosha7.redis.AccessKey;
 import com.example.mymiaosha7.redis.GoodsKey;
 import com.example.mymiaosha7.redis.MiaoshaKey;
 import com.example.mymiaosha7.redis.MyRedisUtil;
@@ -22,6 +23,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.OutputStream;
@@ -139,9 +141,21 @@ public class MiaoshaController implements InitializingBean {
 
     @RequestMapping(value = "/path", method = RequestMethod.GET)
     @ResponseBody
-    public Result<String> getMiaoshaPath(Model model, MiaoshaUser user, @RequestParam("goodsId") long goodsId, @RequestParam("verifyCode") int verifyCode) {
+    public Result<String> getMiaoshaPath(HttpServletRequest request, Model model, MiaoshaUser user,
+                                         @RequestParam("goodsId") long goodsId, @RequestParam(value = "verifyCode", defaultValue = "0") int verifyCode) {
         if (user == null) {
             return Result.error(CodeMsg.SESSION_ERROR);
+        }
+        //查询访问的次数
+        String uri = request.getRequestURI();
+        String key = uri + "_" + user.getId();
+        Integer count = myRedisUtil.get(AccessKey.access, key, Integer.class);
+        if (count == null){
+            myRedisUtil.set(AccessKey.access, key , 1);
+        }else if (count < 5){
+            myRedisUtil.incr(AccessKey.access, key);
+        }else {
+            return Result.error(CodeMsg.access_limit_reached);
         }
         boolean check = miaoshaService.checkVerifyCode(user, goodsId, verifyCode);
         if (!check){
